@@ -1,0 +1,1026 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Млн-Конструктор PRO</title>
+    <style>
+        /* ===== ГЛОБАЛЬНЫЕ СТИЛИ ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0e1a;
+            color: #ffffff;
+            min-height: 100vh;
+            padding: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+        
+        /* ===== ОСНОВНОЙ КОНТЕЙНЕР ===== */
+        .app {
+            max-width: 420px;
+            width: 100%;
+            background: linear-gradient(145deg, #121828, #0d1222);
+            border-radius: 28px;
+            padding: 20px 18px 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+        
+        /* ===== ШАПКА ===== */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .logo {
+            font-size: 22px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #f7971e, #ffd200);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.5px;
+        }
+        
+        .logo span {
+            font-size: 14px;
+            background: none;
+            -webkit-text-fill-color: #8892b0;
+            font-weight: 400;
+        }
+        
+        .level-badge {
+            background: rgba(255, 215, 0, 0.12);
+            padding: 6px 14px;
+            border-radius: 30px;
+            font-size: 11px;
+            font-weight: 600;
+            color: #ffd700;
+            border: 1px solid rgba(255, 215, 0, 0.15);
+            letter-spacing: 0.5px;
+        }
+        
+        /* ===== КАРТОЧКА БАЛАНСА ===== */
+        .balance-card {
+            background: linear-gradient(135deg, #1a2335, #0f1629);
+            border-radius: 20px;
+            padding: 24px 22px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(0, 255, 200, 0.08);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .balance-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(0, 255, 200, 0.03) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        
+        .balance-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #8892b0;
+            font-weight: 500;
+        }
+        
+        .balance-amount {
+            font-size: 44px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #00f5a0, #00d9f5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 4px 0 2px;
+            line-height: 1.1;
+            letter-spacing: -1px;
+        }
+        
+        .balance-sub {
+            font-size: 14px;
+            color: #64ffda;
+            opacity: 0.8;
+        }
+        
+        /* ===== ПРОГРЕСС-БАР ===== */
+        .progress-container {
+            margin: 16px 0 20px;
+        }
+        
+        .progress-bar-bg {
+            background: #1e2740;
+            height: 10px;
+            border-radius: 20px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #f7971e, #ffd200, #f7971e);
+            background-size: 200% 100%;
+            animation: shimmer 3s infinite linear;
+            border-radius: 20px;
+            transition: width 1.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+        
+        .progress-text {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            color: #475569;
+            margin-top: 6px;
+            font-weight: 500;
+        }
+        
+        .progress-text span:last-child {
+            color: #64ffda;
+        }
+        
+        /* ===== СТАТИСТИКА ===== */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 8px;
+            margin: 16px 0 20px;
+        }
+        
+        .stat-item {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 12px 6px;
+            border-radius: 14px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            transition: all 0.3s;
+        }
+        
+        .stat-item:active {
+            transform: scale(0.96);
+            background: rgba(255, 255, 255, 0.06);
+        }
+        
+        .stat-value {
+            font-size: 18px;
+            font-weight: 700;
+            color: #64ffda;
+            line-height: 1.2;
+        }
+        
+        .stat-label {
+            font-size: 9px;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: #475569;
+            margin-top: 4px;
+            font-weight: 600;
+        }
+        
+        /* ===== ЕЖЕДНЕВНЫЙ БОНУС ===== */
+        .daily-bonus {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.08), rgba(255, 215, 0, 0.02));
+            padding: 14px 18px;
+            border-radius: 16px;
+            margin: 0 0 16px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid rgba(255, 215, 0, 0.12);
+            transition: all 0.3s;
+        }
+        
+        .daily-bonus:active {
+            transform: scale(0.99);
+        }
+        
+        .daily-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        
+        .daily-title {
+            font-weight: 600;
+            font-size: 15px;
+            color: #ffd700;
+        }
+        
+        .daily-sub {
+            font-size: 11px;
+            color: #8892b0;
+        }
+        
+        .btn-claim {
+            background: linear-gradient(135deg, #f7971e, #ffd200);
+            border: none;
+            color: #0a0e1a;
+            padding: 10px 22px;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 16px rgba(255, 215, 0, 0.2);
+            min-width: 100px;
+        }
+        
+        .btn-claim:active {
+            transform: scale(0.94);
+            box-shadow: 0 2px 8px rgba(255, 215, 0, 0.1);
+        }
+        
+        .btn-claim:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        /* ===== ЗАДАНИЯ ===== */
+        .section-title {
+            font-size: 16px;
+            font-weight: 700;
+            margin: 18px 0 12px;
+            color: #e2e8f0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .section-title span {
+            font-size: 12px;
+            color: #475569;
+            font-weight: 400;
+        }
+        
+        .task-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .task-item {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 14px 16px;
+            border-radius: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.25s;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .task-item:active {
+            transform: scale(0.97);
+            background: rgba(255, 255, 255, 0.08);
+        }
+        
+        .task-item::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(0, 255, 200, 0.05), transparent);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .task-item:active::after {
+            opacity: 1;
+        }
+        
+        .task-left {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            z-index: 1;
+        }
+        
+        .task-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #e2e8f0;
+        }
+        
+        .task-reward {
+            font-size: 12px;
+            color: #00f5a0;
+            font-weight: 600;
+        }
+        
+        .task-emoji {
+            font-size: 26px;
+            z-index: 1;
+            opacity: 0.8;
+        }
+        
+        /* ===== РЕФЕРАЛКА ===== */
+        .referral-section {
+            background: rgba(0, 255, 200, 0.04);
+            padding: 16px 18px;
+            border-radius: 16px;
+            margin: 18px 0 16px;
+            border: 1px solid rgba(0, 255, 200, 0.08);
+        }
+        
+        .referral-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .referral-title {
+            font-weight: 600;
+            font-size: 15px;
+        }
+        
+        .referral-percent {
+            font-size: 12px;
+            color: #64ffda;
+            background: rgba(0, 255, 200, 0.1);
+            padding: 3px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+        
+        .referral-link {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 10px 14px;
+            border-radius: 12px;
+            font-size: 12px;
+            color: #64ffda;
+            word-break: break-all;
+            margin: 8px 0 12px;
+            border: 1px solid rgba(0, 255, 200, 0.06);
+            font-family: 'Courier New', monospace;
+            letter-spacing: 0.3px;
+            user-select: all;
+        }
+        
+        .btn-copy {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: #e2e8f0;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+        }
+        
+        .btn-copy:active {
+            transform: scale(0.97);
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        /* ===== КНОПКА СБРОСА ===== */
+        .btn-reset {
+            background: rgba(255, 70, 70, 0.08);
+            border: 1px solid rgba(255, 70, 70, 0.12);
+            color: #ff6b6b;
+            padding: 12px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+            margin-top: 6px;
+        }
+        
+        .btn-reset:active {
+            transform: scale(0.97);
+            background: rgba(255, 70, 70, 0.15);
+        }
+        
+        /* ===== ФУТЕР ===== */
+        .footer {
+            text-align: center;
+            margin-top: 18px;
+            font-size: 10px;
+            color: #1e293b;
+            letter-spacing: 0.3px;
+            line-height: 1.6;
+        }
+        
+        .footer a {
+            color: #475569;
+            text-decoration: none;
+        }
+        
+        /* ===== TOAST (ВСПЛЫВАЮЩЕЕ УВЕДОМЛЕНИЕ) ===== */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(10, 14, 26, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 14px 28px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 500;
+            border: 1px solid rgba(0, 255, 200, 0.2);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+            display: none;
+            z-index: 10000;
+            max-width: 90%;
+            text-align: center;
+            color: #e2e8f0;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        
+        .toast.show {
+            display: block;
+            animation: toastIn 0.5s ease forwards;
+        }
+        
+        @keyframes toastIn {
+            0% {
+                opacity: 0;
+                transform: translateX(-50%) translateY(30px) scale(0.9);
+            }
+            100% {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0) scale(1);
+            }
+        }
+        
+        .toast.success {
+            border-color: rgba(0, 255, 200, 0.3);
+        }
+        
+        .toast.error {
+            border-color: rgba(255, 70, 70, 0.3);
+        }
+        
+        /* ===== WINNER SCREEN ===== */
+        .winner-screen {
+            text-align: center;
+            padding: 30px 10px;
+        }
+        
+        .winner-screen .trophy {
+            font-size: 72px;
+            margin-bottom: 12px;
+            display: block;
+            animation: bounce 1.5s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-12px); }
+        }
+        
+        .winner-screen h2 {
+            font-size: 26px;
+            margin: 8px 0;
+            background: linear-gradient(135deg, #f7971e, #ffd200);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .winner-screen p {
+            color: #8892b0;
+            font-size: 14px;
+            max-width: 280px;
+            margin: 8px auto 20px;
+            line-height: 1.5;
+        }
+        
+        /* ===== АДАПТИВ ===== */
+        @media (max-width: 420px) {
+            .app { padding: 16px 14px 24px; }
+            .balance-amount { font-size: 36px; }
+            .stats-grid { gap: 6px; }
+            .stat-value { font-size: 16px; }
+            .task-item { padding: 12px 14px; }
+            .daily-bonus { padding: 12px 14px; flex-wrap: wrap; gap: 10px; }
+            .btn-claim { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <!-- ===== ОСНОВНОЙ КОНТЕЙНЕР ===== -->
+    <div class="app" id="app">
+        
+        <!-- ШАПКА -->
+        <div class="header">
+            <div class="logo">
+                💰 Млн-Конструктор
+                <span>PRO</span>
+            </div>
+            <div class="level-badge" id="levelBadge">🏆 Уровень 1</div>
+        </div>
+        
+        <!-- БАЛАНС -->
+        <div class="balance-card">
+            <div class="balance-label">Твой капитал</div>
+            <div class="balance-amount" id="balanceDisplay">0</div>
+            <div class="balance-sub" id="balanceSub">из 1 000 000 ₽</div>
+        </div>
+        
+        <!-- ПРОГРЕСС -->
+        <div class="progress-container">
+            <div class="progress-bar-bg">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div class="progress-text">
+                <span>0 ₽</span>
+                <span id="percentText">0%</span>
+                <span>1 000 000 ₽</span>
+            </div>
+        </div>
+        
+        <!-- СТАТИСТИКА -->
+        <div class="stats-grid">
+            <div class="stat-item" id="statToday">
+                <div class="stat-value" id="todayEarn">0</div>
+                <div class="stat-label">Сегодня</div>
+            </div>
+            <div class="stat-item" id="statDays">
+                <div class="stat-value" id="daysCount">0</div>
+                <div class="stat-label">Дней</div>
+            </div>
+            <div class="stat-item" id="statTasks">
+                <div class="stat-value" id="tasksDone">0</div>
+                <div class="stat-label">Заданий</div>
+            </div>
+        </div>
+        
+        <!-- ЕЖЕДНЕВНЫЙ БОНУС -->
+        <div class="daily-bonus" id="dailyBonus">
+            <div class="daily-info">
+                <div class="daily-title">🎁 Ежедневный бонус</div>
+                <div class="daily-sub" id="dailySub">+10 000 ₽ каждый день</div>
+            </div>
+            <button class="btn-claim" id="dailyBtn" onclick="claimDaily()">Забрать</button>
+        </div>
+        
+        <!-- ЗАДАНИЯ -->
+        <div class="section-title">
+            📋 Задания <span>выполняй и зарабатывай</span>
+        </div>
+        <div class="task-list" id="taskList">
+            <div class="task-item" onclick="completeTask(5000, '📝')">
+                <div class="task-left">
+                    <div class="task-title">Пройти опрос</div>
+                    <div class="task-reward">+5 000 ₽</div>
+                </div>
+                <span class="task-emoji">📝</span>
+            </div>
+            <div class="task-item" onclick="completeTask(15000, '📺')">
+                <div class="task-left">
+                    <div class="task-title">Посмотреть видео</div>
+                    <div class="task-reward">+15 000 ₽</div>
+                </div>
+                <span class="task-emoji">📺</span>
+            </div>
+            <div class="task-item" onclick="completeTask(25000, '👥')">
+                <div class="task-left">
+                    <div class="task-title">Пригласить друга</div>
+                    <div class="task-reward">+25 000 ₽</div>
+                </div>
+                <span class="task-emoji">👥</span>
+            </div>
+            <div class="task-item" onclick="completeTask(50000, '📚')">
+                <div class="task-left">
+                    <div class="task-title">Изучить урок</div>
+                    <div class="task-reward">+50 000 ₽</div>
+                </div>
+                <span class="task-emoji">📚</span>
+            </div>
+            <div class="task-item" onclick="completeTask(100000, '💎')">
+                <div class="task-left">
+                    <div class="task-title">Купить NFT (симуляция)</div>
+                    <div class="task-reward">+100 000 ₽</div>
+                </div>
+                <span class="task-emoji">💎</span>
+            </div>
+        </div>
+        
+        <!-- РЕФЕРАЛКА -->
+        <div class="referral-section">
+            <div class="referral-header">
+                <div class="referral-title">🔗 Реферальная программа</div>
+                <div class="referral-percent">+5%</div>
+            </div>
+            <div class="referral-link" id="refLink">Загрузка...</div>
+            <button class="btn-copy" onclick="copyRefLink()">📋 Копировать ссылку</button>
+        </div>
+        
+        <!-- СБРОС -->
+        <button class="btn-reset" onclick="resetProgress()">🔄 Сбросить прогресс</button>
+        
+        <!-- ФУТЕР -->
+        <div class="footer">
+            Обучение финансовой грамотности • Не является финансовой рекомендацией<br>
+            <span style="color:#1e293b;">v2.0 • Сделано с ❤️</span>
+        </div>
+    </div>
+    
+    <!-- ===== TOAST ===== -->
+    <div class="toast" id="toast"></div>
+
+    <!-- ===== JAVASCRIPT ===== -->
+    <script>
+        // ============================================================
+        // 1. СОСТОЯНИЕ ПРИЛОЖЕНИЯ (всё сохраняется в localStorage)
+        // ============================================================
+        const state = {
+            balance: parseInt(localStorage.getItem('mln_balance')) || 0,
+            todayEarn: parseInt(localStorage.getItem('mln_today')) || 0,
+            daysCount: parseInt(localStorage.getItem('mln_days')) || 0,
+            tasksDone: parseInt(localStorage.getItem('mln_tasks')) || 0,
+            lastDaily: parseInt(localStorage.getItem('mln_lastDaily')) || 0,
+            refCode: localStorage.getItem('mln_refCode') || generateRefCode(),
+            isWinner: false
+        };
+        
+        const TARGET = 1000000;
+        const DAILY_AMOUNT = 10000;
+        const DAY_MS = 86400000;
+        
+        // ============================================================
+        // 2. ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
+        // ============================================================
+        
+        // Генерация реферального кода
+        function generateRefCode() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let code = '';
+            for (let i = 0; i < 8; i++) {
+                code += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            localStorage.setItem('mln_refCode', code);
+            return code;
+        }
+        
+        // Сохранение состояния
+        function saveState() {
+            localStorage.setItem('mln_balance', state.balance);
+            localStorage.setItem('mln_today', state.todayEarn);
+            localStorage.setItem('mln_days', state.daysCount);
+            localStorage.setItem('mln_tasks', state.tasksDone);
+            localStorage.setItem('mln_lastDaily', state.lastDaily);
+            localStorage.setItem('mln_refCode', state.refCode);
+        }
+        
+        // Показ уведомления (тоста)
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = 'toast ' + type;
+            // Принудительный reflow для перезапуска анимации
+            void toast.offsetWidth;
+            toast.classList.add('show');
+            clearTimeout(toast._hideTimeout);
+            toast._hideTimeout = setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2500);
+        }
+        
+        // Форматирование чисел
+        function formatNumber(num) {
+            return num.toLocaleString('ru-RU');
+        }
+        
+        // ============================================================
+        // 3. ОБНОВЛЕНИЕ ИНТЕРФЕЙСА
+        // ============================================================
+        function updateUI() {
+            // Баланс
+            document.getElementById('balanceDisplay').textContent = formatNumber(state.balance);
+            document.getElementById('balanceSub').textContent = `из ${formatNumber(TARGET)} ₽`;
+            
+            // Прогресс
+            const percent = Math.min((state.balance / TARGET) * 100, 100);
+            document.getElementById('progressFill').style.width = percent + '%';
+            document.getElementById('percentText').textContent = Math.floor(percent) + '%';
+            
+            // Статистика
+            document.getElementById('todayEarn').textContent = formatNumber(state.todayEarn);
+            document.getElementById('daysCount').textContent = state.daysCount;
+            document.getElementById('tasksDone').textContent = state.tasksDone;
+            
+            // Уровень (ранг)
+            let level = 1;
+            if (state.balance >= 10000) level = 2;
+            if (state.balance >= 50000) level = 3;
+            if (state.balance >= 100000) level = 4;
+            if (state.balance >= 500000) level = 5;
+            if (state.balance >= 1000000) level = 6;
+            document.getElementById('levelBadge').textContent = '🏆 Уровень ' + level;
+            
+            // Ежедневный бонус
+            const now = Date.now();
+            const last = state.lastDaily;
+            const btn = document.getElementById('dailyBtn');
+            const sub = document.getElementById('dailySub');
+            
+            if (now - last >= DAY_MS) {
+                btn.disabled = false;
+                btn.textContent = '🎁 Забрать';
+                sub.textContent = '+10 000 ₽ доступно!';
+                sub.style.color = '#00f5a0';
+            } else {
+                btn.disabled = true;
+                const remaining = DAY_MS - (now - last);
+                const hours = Math.floor(remaining / 3600000);
+                const mins = Math.floor((remaining % 3600000) / 60000);
+                btn.textContent = `⏳ ${hours}ч ${mins}м`;
+                sub.textContent = 'Бонус будет доступен через';
+                sub.style.color = '#8892b0';
+            }
+            
+            // Реферальная ссылка
+            const botUsername = 'ваш_бот_username'; // ЗАМЕНИТЕ НА СВОЙ
+            document.getElementById('refLink').textContent = 
+                `t.me/${botUsername}?start=ref_${state.refCode}`;
+            
+            // Проверка на победу
+            if (state.balance >= TARGET && !state.isWinner) {
+                state.isWinner = true;
+                showToast('🏆 ПОЗДРАВЛЯЕМ! Вы заработали 1 000 000 ₽!', 'success');
+                // Показываем экран победы
+                document.getElementById('taskList').innerHTML = `
+                    <div class="winner-screen">
+                        <span class="trophy">🏆</span>
+                        <h2>МИЛЛИОНЕР!</h2>
+                        <p>Вы достигли цели! Теперь вы знаете, как работает пассивный доход. Время зарабатывать реальные деньги!</p>
+                        <button class="btn-claim" onclick="resetProgress()" style="width:100%;">
+                            🔄 Начать заново
+                        </button>
+                    </div>
+                `;
+                // Отправка в Telegram
+                if (window.Telegram && window.Telegram.WebApp) {
+                    window.Telegram.WebApp.sendData(JSON.stringify({
+                        event: 'winner',
+                        balance: state.balance
+                    }));
+                }
+            }
+            
+            saveState();
+        }
+        
+        // ============================================================
+        // 4. ОСНОВНЫЕ ДЕЙСТВИЯ
+        // ============================================================
+        
+        // Выполнение задания
+        function completeTask(amount, emoji) {
+            if (state.balance >= TARGET) {
+                showToast('🎉 Вы уже достигли цели!', 'error');
+                return;
+            }
+            
+            state.balance += amount;
+            state.todayEarn += amount;
+            state.tasksDone += 1;
+            
+            showToast(`${emoji} +${formatNumber(amount)} ₽`, 'success');
+            updateUI();
+            
+            // Отправка в Telegram
+            if (window.Telegram && window.Telegram.WebApp) {
+                window.Telegram.WebApp.sendData(JSON.stringify({
+                    event: 'task_completed',
+                    balance: state.balance,
+                    amount: amount
+                }));
+            }
+        }
+        
+        // Ежедневный бонус
+        function claimDaily() {
+            const now = Date.now();
+            const last = state.lastDaily;
+            
+            if (now - last < DAY_MS) {
+                const remaining = DAY_MS - (now - last);
+                const hours = Math.ceil(remaining / 3600000);
+                showToast(`⏳ Бонус через ${hours} ч`, 'error');
+                return;
+            }
+            
+            state.balance += DAILY_AMOUNT;
+            state.todayEarn += DAILY_AMOUNT;
+            state.daysCount += 1;
+            state.lastDaily = now;
+            
+            showToast('🎁 +10 000 ₽ (ежедневный бонус)', 'success');
+            updateUI();
+            
+            if (window.Telegram && window.Telegram.WebApp) {
+                window.Telegram.WebApp.sendData(JSON.stringify({
+                    event: 'daily_claimed',
+                    balance: state.balance
+                }));
+            }
+        }
+        
+        // Копирование реферальной ссылки
+        function copyRefLink() {
+            const link = document.getElementById('refLink').textContent;
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText('https://' + link).then(() => {
+                    showToast('✅ Ссылка скопирована!', 'success');
+                }).catch(() => {
+                    fallbackCopy(link);
+                });
+            } else {
+                fallbackCopy(link);
+            }
+        }
+        
+        function fallbackCopy(text) {
+            const textarea = document.createElement('textarea');
+            textarea.value = 'https://' + text;
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            textarea.select();
+            try {
+                document.execCommand('copy');
+                showToast('✅ Ссылка скопирована!', 'success');
+            } catch (e) {
+                showToast('❌ Не удалось скопировать', 'error');
+            }
+            document.body.removeChild(textarea);
+        }
+        
+        // Сброс прогресса
+        function resetProgress() {
+            if (!confirm('⚠️ Вы уверены? Весь прогресс будет удалён!')) return;
+            
+            state.balance = 0;
+            state.todayEarn = 0;
+            state.daysCount = 0;
+            state.tasksDone = 0;
+            state.lastDaily = 0;
+            state.isWinner = false;
+            
+            // Восстанавливаем задания
+            document.getElementById('taskList').innerHTML = `
+                <div class="task-item" onclick="completeTask(5000, '📝')">
+                    <div class="task-left">
+                        <div class="task-title">Пройти опрос</div>
+                        <div class="task-reward">+5 000 ₽</div>
+                    </div>
+                    <span class="task-emoji">📝</span>
+                </div>
+                <div class="task-item" onclick="completeTask(15000, '📺')">
+                    <div class="task-left">
+                        <div class="task-title">Посмотреть видео</div>
+                        <div class="task-reward">+15 000 ₽</div>
+                    </div>
+                    <span class="task-emoji">📺</span>
+                </div>
+                <div class="task-item" onclick="completeTask(25000, '👥')">
+                    <div class="task-left">
+                        <div class="task-title">Пригласить друга</div>
+                        <div class="task-reward">+25 000 ₽</div>
+                    </div>
+                    <span class="task-emoji">👥</span>
+                </div>
+                <div class="task-item" onclick="completeTask(50000, '📚')">
+                    <div class="task-left">
+                        <div class="task-title">Изучить урок</div>
+                        <div class="task-reward">+50 000 ₽</div>
+                    </div>
+                    <span class="task-emoji">📚</span>
+                </div>
+                <div class="task-item" onclick="completeTask(100000, '💎')">
+                    <div class="task-left">
+                        <div class="task-title">Купить NFT (симуляция)</div>
+                        <div class="task-reward">+100 000 ₽</div>
+                    </div>
+                    <span class="task-emoji">💎</span>
+                </div>
+            `;
+            
+            showToast('🔄 Прогресс сброшен', 'success');
+            updateUI();
+            
+            if (window.Telegram && window.Telegram.WebApp) {
+                window.Telegram.WebApp.sendData(JSON.stringify({
+                    event: 'reset'
+                }));
+            }
+        }
+        
+        // ============================================================
+        // 5. ПАССИВНЫЙ ДОХОД (АВТОМАТИЧЕСКИЙ)
+        // ============================================================
+        // Каждые 30 секунд начисляется случайная сумма (50-150 руб)
+        let passiveInterval = setInterval(() => {
+            if (state.balance >= TARGET) return;
+            const passiveAmount = Math.floor(Math.random() * 100) + 50;
+            state.balance += passiveAmount;
+            state.todayEarn += passiveAmount;
+            updateUI();
+            
+            // Тихое обновление без тоста
+            if (window.Telegram && window.Telegram.WebApp) {
+                window.Telegram.WebApp.sendData(JSON.stringify({
+                    event: 'passive_income',
+                    balance: state.balance,
+                    amount: passiveAmount
+                }));
+            }
+        }, 30000);
+        
+        // ============================================================
+        // 6. ИНИЦИАЛИЗАЦИЯ TELEGRAM WEBAPP
+        // ============================================================
+        if (window.Telegram && window.Telegram.WebApp) {
+            // Сообщаем Telegram, что приложение готово
+            Telegram.WebApp.ready();
+            // Расширяем на весь экран
+            Telegram.WebApp.expand();
+            // Устанавливаем цвет фона
+            Telegram.WebApp.setBackgroundColor('#0a0e1a');
+            // Устанавливаем цвет заголовка
+            Telegram.WebApp.setHeaderColor('#0a0e1a');
+            
+            // Обработка данных от бота
+            Telegram.WebApp.onEvent('mainButtonClicked', function() {
+                showToast('🔘 Кнопка нажата', 'success');
+            });
+            
+            // Отправляем приветствие
+            Telegram.WebApp.sendData(JSON.stringify({
+                event: 'app_loaded',
+                balance: state.balance
+            }));
+        }
+        
+        // ============================================================
+        // 7. ЗАПУСК
+        // ============================================================
+        updateUI();
+        
+        // Приветственный тост
+        setTimeout(() => {
+            showToast('🚀 Добро пожаловать! Зарабатывай 1 млн ₽', 'success');
+        }, 500);
+        
+        // ============================================================
+        // 8. ДОПОЛНИТЕЛЬНО: ОБРАБОТКА ОШИБОК
+        // ============================================================
+        window.addEventListener('error', function(e) {
+            console.error('Ошибка:', e.message);
+            // Показываем тост только если это критическая ошибка
+            if (e.message.includes('undefined') || e.message.includes('null')) {
+                showToast('⚠️ Произошла ошибка, но приложение работает', 'error');
+            }
+        });
+        
+        // Сохранение при закрытии
+        window.addEventListener('beforeunload', function() {
+            saveState();
+        });
+        
+        console.log('✅ Млн-Конструктор PRO загружен!');
+        console.log('💰 Баланс:', state.balance);
+        console.log('🔗 Реферальный код:', state.refCode);
+        console.log('📊 Статистика:', {
+            days: state.daysCount,
+            tasks: state.tasksDone,
+            today: state.todayEarn
+        });
+    </script>
+</body>
+</html>
